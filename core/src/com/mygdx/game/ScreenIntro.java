@@ -11,16 +11,19 @@ import com.badlogic.gdx.graphics.Texture;
 public class ScreenIntro implements Screen {
     HealthHaven s;
     Texture imgBackGround; // фон
-    SpaceButton btnGame, btnSettings, btnAbout, btnExit;
+    SpaceButton btnGame, btnSettings, btnAbout, btnExit, game_header;
 
     public ScreenIntro(HealthHaven healthHaven) {
         s = healthHaven;
-        imgBackGround = new Texture("space00.jpg");
+        imgBackGround = new Texture("bg_intro.png");
         // создаём кнопки
         btnGame = new SpaceButton(s.fontLarge, "PLAY", 50, 450);
         btnSettings = new SpaceButton(s.fontLarge, "SETTINGS", 50, 350);
         btnAbout = new SpaceButton(s.fontLarge, "ABOUT", 50, 250);
         btnExit = new SpaceButton(s.fontLarge, "EXIT", 50, 150);
+
+        // создаём текст
+        game_header = new SpaceButton(s.fontLarge, "HEALTH HAVEN", SCR_WIDTH / 2, SCR_HEIGHT - 100);
     }
 
     @Override
@@ -61,6 +64,7 @@ public class ScreenIntro implements Screen {
         btnSettings.font.draw(s.batch, btnSettings.text, btnSettings.x, btnSettings.y);
         btnAbout.font.draw(s.batch, btnAbout.text, btnAbout.x, btnAbout.y);
         btnExit.font.draw(s.batch, btnExit.text, btnExit.x, btnExit.y);
+        game_header.font.draw(s.batch, game_header.text, SCR_WIDTH / 2 - game_header.width / 2, game_header.y);
         s.batch.end();
     }
 

@@ -5,12 +5,12 @@ import static com.mygdx.game.HealthHaven.SCR_WIDTH;
 
 public class Guy extends HavenObject {
     boolean isAlive;
-    int lives;
+    int health;
 
     public Guy(float x, float y, float width, float height) {
         super(x, y, width, height);
         isAlive = true;
-        lives = 1;
+        health = 100;
     }
 
     @Override
@@ -28,5 +28,9 @@ public class Guy extends HavenObject {
             x = SCR_WIDTH-width/2;
             vx = 0;
         }
+    }
+
+    boolean overlap(HavenItem item) {
+        return Math.abs(x-item.x) < width/2+item.width/2 & Math.abs(y-item.y) < height/2+item.height/2;
     }
 }

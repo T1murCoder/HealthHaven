@@ -7,9 +7,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -23,9 +23,8 @@ public class ScreenGame implements Screen {
     Texture imgBG;
     Texture imgShip;
     Texture imgEnemy;
-    //Texture imgShot;
-    Texture imgAtlasFragments;
-    TextureRegion[][] imgFragment = new TextureRegion[2][4];
+    public static TextureRegion[] imgGoodItem = new TextureRegion[3];
+    public static TextureRegion[] imgBadItem = new TextureRegion[3];
     // звуки
     //Sound sndShoot;
     //Sound sndExplosion;
@@ -34,17 +33,20 @@ public class ScreenGame implements Screen {
     SpaceButton btnExit;
 
     // игровые объекты
-    ArrayList<Item> enemy = new ArrayList<>();
-    //ArrayList<ShipShot> shots = new ArrayList<>();
-    ArrayList<Fragment> fragments = new ArrayList<>();
-    Guy ship;
+    ArrayList<HavenItem> items = new ArrayList<>();
+
+    Guy guy;
     Player[] players = new Player[6]; // игроки в таблице рекордов
 
+    TypeItem[] typeItems = new TypeItem[6];
+
+    // время
+    long timeStart, timeCurrent;
+
     // переменные для работы со таймером
-    long timeEnemySpawn, timeEnemyInterval;
+    long timeItemSpawn, timeItemInterval;
     long timeShipDestroy, timeShipAliveInterval = 6000;
 
-    int kills; // количество сбитых кораблей
     boolean isGameOver; // флаг окончания игры
 
     public ScreenGame(HealthHaven healthHaven) {
@@ -56,13 +58,22 @@ public class ScreenGame implements Screen {
         imgBG = new Texture("bg_game.png");
         imgShip = new Texture("ship.png");
         imgEnemy = new Texture("enemy.png");
-        //imgShot = new Texture("shipshot.png");
-        imgAtlasFragments = new Texture("atlasfragment.png");
-        // режем атлас изображений на текстуры
-        for (int i = 0; i < imgFragment[0].length; i++) {
-            imgFragment[0][i] = new TextureRegion(imgAtlasFragments, i*200, 0, 200, 200);
-            imgFragment[1][i] = new TextureRegion(imgAtlasFragments, i*200, 200, 200, 200);
+
+        for (int i = 0; i < imgGoodItem.length; i++) {
+            imgGoodItem[i] = new TextureRegion(new Texture("items/good/" + (i + 1) + ".png"));
         }
+
+        for (int i = 0; i < imgBadItem.length; i++) {
+            imgBadItem[i] = new TextureRegion(new Texture("items/bad/" + (i + 1) + ".png"));
+        }
+
+        typeItems[0] = new TypeItem(imgGoodItem[0], 5, "Apple");
+        typeItems[1] = new TypeItem(imgGoodItem[1], 3, "Banana");
+        typeItems[2] = new TypeItem(imgGoodItem[2], 10, "Greek salad");
+        typeItems[3] = new TypeItem(imgBadItem[0], -7, "Beer");
+        typeItems[4] = new TypeItem(imgBadItem[1], -5, "Beer can");
+        typeItems[5] = new TypeItem(imgBadItem[2], -15, "Cigarette");
+
         // загружаем звуки
         //sndShoot = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
         //sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
@@ -75,8 +86,6 @@ public class ScreenGame implements Screen {
             players[i] = new Player("Noname", 0);
         }
         loadTableOfRecords();
-
-        // создаём объекты звёздного неба
     }
 
     @Override // срабатывает при переходе на этот screen
@@ -90,29 +99,33 @@ public class ScreenGame implements Screen {
         if(Gdx.input.isTouched()) {
             s.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             s.camera.unproject(s.touch);
-            ship.vx = (s.touch.x - ship.x)/50;
+            guy.vx = (s.touch.x - guy.x)/50;
             //ship.vy = (s.touch.y - ship.y)/50;
             if(btnExit.hit(s.touch.x, s.touch.y)) {
                 s.setScreen(s.screenIntro);
             }
         } else if(isAccelerometerPresent) { // проверяем наклон акселерометра
-            ship.vx = -Gdx.input.getAccelerometerX()*2;
+            guy.vx = -Gdx.input.getAccelerometerX()*2;
         }
 
         // +++++++++++++++ события игры ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        // небо
 
-        // вражеские корабли
-        if(ship.isAlive){
-            spawnEnemy();
+        // спавн предметов
+        if(guy.isAlive){
+            spawnItem();
         }
-        for (int i = 0; i < enemy.size(); i++) {
-            enemy.get(i).move();
-            if(enemy.get(i).outOfScreen()) {
-                if(ship.isAlive){
-                    destroyShip();
-                }
-                enemy.remove(i);
+
+        for (int i = 0; i < items.size(); i++) {
+            items.get(i).move();
+            if (items.get(i).outOfScreen()) {
+                items.remove(i);
+                i--;
+                continue;
+            }
+
+            if (guy.isAlive && guy.overlap(items.get(i))) {
+                changeHealth(items.get(i).type.impact);
+                items.remove(i);
                 i--;
             }
         }
@@ -145,59 +158,54 @@ public class ScreenGame implements Screen {
             }
         }
          */
-        // обломки
-        for (int i = 0; i < fragments.size(); i++) {
-            fragments.get(i).move();
-            if(fragments.get(i).outOfScreen()) {
-                fragments.remove(i);
-                i--;
-            }
-        }
 
         // наш космический корабль
-        if(ship.isAlive){
-            ship.move();
+        if(guy.isAlive){
+            guy.move();
         } else {
             if(!isGameOver) {
                 if (timeShipDestroy + timeShipAliveInterval < TimeUtils.millis()) {
-                    ship.isAlive = true;
-                    ship.x = SCR_WIDTH / 2;
+                    guy.isAlive = true;
+                    guy.x = SCR_WIDTH / 2;
                 }
             }
         }
+
+        if(!isGameOver) {
+            timeCurrent = TimeUtils.millis() - timeStart;
+        }
+
 
         // +++++++++++++++ отрисовка всего +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         s.camera.update();
         s.batch.setProjectionMatrix(s.camera.combined);
         s.batch.begin();
         s.batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        for (int i = 0; i < fragments.size(); i++) {
-            s.batch.draw(imgFragment[fragments.get(i).typeShip][fragments.get(i).typeFragment],
-                    fragments.get(i).getX(), fragments.get(i).getY(),
-                    fragments.get(i).width/2, fragments.get(i).height/2,
-                    fragments.get(i).width, fragments.get(i).height,
-                    1, 1, fragments.get(i).angle);
-        }
+        /*
         for (int i = 0; i < enemy.size(); i++) {
             s.batch.draw(imgEnemy, enemy.get(i).getX(), enemy.get(i).getY(), enemy.get(i).width, enemy.get(i).height);
         }
-        /*
-        for (int i = 0; i < shots.size(); i++) {
-            s.batch.draw(imgShot, shots.get(i).getX(), shots.get(i).getY(), shots.get(i).width, shots.get(i).height);
+
+         */
+
+        for (int i = 0; i < items.size(); i++) {
+            s.batch.draw(items.get(i).type.img,
+                    items.get(i).getX(), items.get(i).getY(),
+                    items.get(i).width/2, items.get(i).height/2,
+                    items.get(i).width, items.get(i).height,
+                    1, 1, items.get(i).angle);
         }
-        */
-        if(ship.isAlive) {
-            s.batch.draw(imgShip, ship.getX(), ship.getY(), ship.width, ship.height);
+
+        if(guy.isAlive) {
+            s.batch.draw(imgShip, guy.getX(), guy.getY(), guy.width, guy.height);
         }
-        for (int i = 0; i < ship.lives; i++) {
-            s.batch.draw(imgShip, SCR_WIDTH-40-40*i, SCR_HEIGHT-40, 30, 30);
-        }
-        s.fontSmall.draw(s.batch, "KILLS: "+kills, 20, SCR_HEIGHT-20);
+        s.fontSmall.draw(s.batch, "TIME: "+timeToString(timeCurrent), SCR_WIDTH-250, SCR_HEIGHT-20);
+        s.fontSmall.draw(s.batch, "HEALTH: "+ guy.health, 20, SCR_HEIGHT-20);
         btnExit.font.draw(s.batch, btnExit.text, btnExit.x, btnExit.y);
         if(isGameOver){
             s.fontLarge.draw(s.batch, "GAME OVER", 0, SCR_HEIGHT/5*3, SCR_WIDTH, Align.center, false);
             for (int i = 0; i < players.length; i++) {
-                String str = players[i].name + "......." + players[i].kills;
+                String str = players[i].name + "......." + timeToString(players[i].time);
                 s.fontSmall.draw(s.batch, str, 0, SCR_HEIGHT/2-i*40, SCR_WIDTH, Align.center, true);
             }
         }
@@ -229,14 +237,21 @@ public class ScreenGame implements Screen {
         imgBG.dispose();
         imgShip.dispose();
         imgEnemy.dispose();
-        //imgShot.dispose();
-        imgAtlasFragments.dispose();
     }
 
-    void spawnEnemy() {
-        if(TimeUtils.millis() > timeEnemySpawn+timeEnemyInterval) {
-            enemy.add(new Item(100, 100));
-            timeEnemySpawn = TimeUtils.millis();
+    void spawnItem() {
+        if(TimeUtils.millis() > timeItemSpawn + timeItemInterval) {
+            items.add(new HavenItem(75, 75, typeItems[MathUtils.random(0, typeItems.length - 1)]));
+            timeItemSpawn = TimeUtils.millis();
+        }
+    }
+
+    void changeHealth(int amount) {
+        guy.health += amount;
+        if (guy.health > 100) guy.health = 100;
+        if (guy.health <= 0) {
+            guy.health = 0;
+            gameOver();
         }
     }
 
@@ -250,27 +265,18 @@ public class ScreenGame implements Screen {
         */
     }
 
-    void spawnFragments(float x, float y, float shipSize, int type) {
-        for (int i = 0; i < 60; i++) {
-            fragments.add(new Fragment(x, y, shipSize, type));
-        }
+    String timeToString(long time){
+        String min = "" + time/1000/60/10 + time/1000/60%10;
+        String sec = "" + time/1000%60/10 + time/1000%60%10;
+        return min+":"+sec;
     }
 
-    void destroyShip() {
-        spawnFragments(ship.x, ship.y, ship.width, 1);
-        //if(s.sound) sndExplosion.play();
-        ship.isAlive = false;
-        ship.lives--;
-        if(ship.lives == 0) {
-            gameOver();
-        }
-        timeShipDestroy = TimeUtils.millis();
-    }
 
     void gameOver() {
         isGameOver = true;
+        guy.isAlive = false;
         players[players.length-1].name = s.playerName;
-        players[players.length-1].kills = kills;
+        players[players.length-1].time = timeCurrent;
         sortTableOfRecords();
         saveTableOfRecords();
     }
@@ -278,18 +284,16 @@ public class ScreenGame implements Screen {
     void gameStart() {
         isGameOver = false; // выключаем флаг окончания игры
         // удаляем все объекты на экране
-        enemy.clear();
-        //shots.clear();
-        fragments.clear();
-        kills = 0; // обнуляем фраги
-        ship = new Guy(SCR_WIDTH/2, 100, 100, 100); // создаём объект космического корабля
+        items.clear();
+        timeStart = TimeUtils.millis(); // время старта
+        guy = new Guy(SCR_WIDTH/2, 100, 100, 100); // создаём объект космического корабля
         // определяем интервал спауна врагов в зависимости от уровня игры
         if(s.modeOfGame == MODE_EASY) {
-            timeEnemyInterval = 2000;
+            timeItemInterval = 900;
         } else if(s.modeOfGame == MODE_NORMAL) {
-            timeEnemyInterval = 1200;
+            timeItemInterval = 600;
         } else if(s.modeOfGame == MODE_HARD) {
-            timeEnemyInterval = 700;
+            timeItemInterval = 300;
         }
     }
 
@@ -298,7 +302,7 @@ public class ScreenGame implements Screen {
         Preferences prefs = Gdx.app.getPreferences("Table Of Space Records");
         for (int i = 0; i < players.length; i++) {
             prefs.putString("name"+i, players[i].name);
-            prefs.putInteger("kills"+i, players[i].kills);
+            prefs.putLong("time"+i, players[i].time);
         }
         prefs.flush(); // записываем
     }
@@ -308,7 +312,7 @@ public class ScreenGame implements Screen {
         Preferences prefs = Gdx.app.getPreferences("Table Of Space Records");
         for (int i = 0; i < players.length; i++) {
             if(prefs.contains("name"+i)) players[i].name = prefs.getString("name"+i);
-            if(prefs.contains("kills"+i)) players[i].kills = prefs.getInteger("kills"+i);
+            if(prefs.contains("time"+i)) players[i].time = prefs.getLong("time"+i);
         }
     }
 
@@ -316,16 +320,10 @@ public class ScreenGame implements Screen {
     void sortTableOfRecords(){
         for (int j = 0; j < players.length-1; j++) {
             for (int i = 0; i < players.length-1; i++) {
-                if(players[i].kills < players[i+1].kills){ // по убыванию
-                    int c = players[i].kills;
-                    players[i].kills = players[i+1].kills;
-                    players[i+1].kills = c;
-                    String s = players[i].name;
-                    players[i].name = players[i+1].name;
-                    players[i+1].name = s;
-					/* Player c = players[i];
+                if(players[i].time < players[i+1].time){ // по убыванию
+					Player c = players[i];
 					players[i] = players[i+1];
-					players[i+1] = c; */
+					players[i+1] = c;
                 }
             }
         }
@@ -335,7 +333,7 @@ public class ScreenGame implements Screen {
     void clearTableOfRecords(){
         for (int i = 0; i < players.length; i++) {
             players[i].name = "Noname";
-            players[i].kills = 0;
+            players[i].time = 0;
         }
     }
 }
