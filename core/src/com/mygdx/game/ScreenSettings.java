@@ -27,7 +27,7 @@ public class ScreenSettings implements Screen {
         s = spaceShooter;
         keyboard = new InputKeyboard(SCR_WIDTH, SCR_HEIGHT/2, 8);
 
-        imgBackGround = new Texture("space01.jpg");
+        imgBackGround = new Texture("bg_settings.png");
         // создаём кнопки
         btnName = new SpaceButton(s.fontMedium, "Name: Noname", 50, 600);
         btnMode = new SpaceButton(s.fontMedium, "Mode: Easy", 50, 550);

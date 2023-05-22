@@ -14,14 +14,16 @@ public class ScreenAbout implements Screen {
     SpaceButton btnBack;
 
     String textAbout =
-            "Игра Space Shooter\n" +
+            "Игра Health Haven\n" +
             "создана в рамках\n" +
             "проекта Mobile Game\n" +
             "Development на Java\n" +
             "с использованием\n" +
             "фреймворка LibGDX.\n\n" +
-            "Цель игры: отбивать\n" +
-            "атаки пришельцев.";
+            "Цель игры: продержаться\n" +
+            "как можно дольше,\n" +
+            "собирая хорошие предметы\n" +
+            "и уклоняясь от плохих.";
 
     public ScreenAbout(HealthHaven healthHaven) {
         s = healthHaven;
