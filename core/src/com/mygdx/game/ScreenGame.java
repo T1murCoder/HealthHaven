@@ -22,12 +22,9 @@ public class ScreenGame implements Screen {
     // текстуры
     Texture imgBG;
     Texture imgShip;
-    Texture imgEnemy;
     public static TextureRegion[] imgGoodItem = new TextureRegion[3];
     public static TextureRegion[] imgBadItem = new TextureRegion[3];
     // звуки
-    //Sound sndShoot;
-    //Sound sndExplosion;
 
     // кнопки
     SpaceButton btnExit;
@@ -46,8 +43,10 @@ public class ScreenGame implements Screen {
     // переменные для работы со таймером
     long timeItemSpawn, timeItemInterval;
     long timeShipDestroy, timeShipAliveInterval = 6000;
+    int timeCounter = 0;
 
     boolean isGameOver; // флаг окончания игры
+    int hpPerSecond;
 
     public ScreenGame(HealthHaven healthHaven) {
         s = healthHaven;
@@ -57,7 +56,6 @@ public class ScreenGame implements Screen {
         // загружаем изображения
         imgBG = new Texture("bg_game.png");
         imgShip = new Texture("ship.png");
-        imgEnemy = new Texture("enemy.png");
 
         for (int i = 0; i < imgGoodItem.length; i++) {
             imgGoodItem[i] = new TextureRegion(new Texture("items/good/" + (i + 1) + ".png"));
@@ -110,6 +108,8 @@ public class ScreenGame implements Screen {
 
         // +++++++++++++++ события игры ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+        timeCounter += 1;
+
         // спавн предметов
         if(guy.isAlive){
             spawnItem();
@@ -129,7 +129,9 @@ public class ScreenGame implements Screen {
                 i--;
             }
         }
-
+        // TODO: Сделать звуки
+        // TODO: Сделать другие фоны для настроек, about
+        // TODO: Переписать about
         // наши выстрелы
         /*
         if(ship.isAlive){
@@ -175,6 +177,7 @@ public class ScreenGame implements Screen {
             timeCurrent = TimeUtils.millis() - timeStart;
         }
 
+        takeHealthEverySecond(hpPerSecond);
 
         // +++++++++++++++ отрисовка всего +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         s.camera.update();
@@ -236,7 +239,6 @@ public class ScreenGame implements Screen {
     public void dispose() {
         imgBG.dispose();
         imgShip.dispose();
-        imgEnemy.dispose();
     }
 
     void spawnItem() {
@@ -252,6 +254,12 @@ public class ScreenGame implements Screen {
         if (guy.health <= 0) {
             guy.health = 0;
             gameOver();
+        }
+    }
+
+    void takeHealthEverySecond(int amount) {
+        if (timeCounter % 60 == 0) {
+            guy.health -= amount;
         }
     }
 
@@ -290,10 +298,13 @@ public class ScreenGame implements Screen {
         // определяем интервал спауна врагов в зависимости от уровня игры
         if(s.modeOfGame == MODE_EASY) {
             timeItemInterval = 900;
+            hpPerSecond = 1;
         } else if(s.modeOfGame == MODE_NORMAL) {
             timeItemInterval = 600;
+            hpPerSecond = 2;
         } else if(s.modeOfGame == MODE_HARD) {
             timeItemInterval = 300;
+            hpPerSecond = 3;
         }
     }
 
