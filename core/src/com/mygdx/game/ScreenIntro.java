@@ -11,19 +11,19 @@ import com.badlogic.gdx.graphics.Texture;
 public class ScreenIntro implements Screen {
     HealthHaven s;
     Texture imgBackGround; // фон
-    SpaceButton btnGame, btnSettings, btnAbout, btnExit, game_header;
+    HavenButton btnGame, btnSettings, btnAbout, btnExit, game_header;
 
     public ScreenIntro(HealthHaven healthHaven) {
         s = healthHaven;
         imgBackGround = new Texture("bg_intro.png");
         // создаём кнопки
-        btnGame = new SpaceButton(s.fontLarge, "PLAY", 50, 450);
-        btnSettings = new SpaceButton(s.fontLarge, "SETTINGS", 50, 350);
-        btnAbout = new SpaceButton(s.fontLarge, "ABOUT", 50, 250);
-        btnExit = new SpaceButton(s.fontLarge, "EXIT", 50, 150);
+        btnGame = new HavenButton(s.fontLarge, "PLAY", 50, 450);
+        btnSettings = new HavenButton(s.fontLarge, "SETTINGS", 50, 350);
+        btnAbout = new HavenButton(s.fontLarge, "ABOUT", 50, 250);
+        btnExit = new HavenButton(s.fontLarge, "EXIT", 50, 150);
 
         // создаём текст
-        game_header = new SpaceButton(s.fontLarge, "HEALTH HAVEN", SCR_WIDTH / 2, SCR_HEIGHT - 100);
+        game_header = new HavenButton(s.fontLarge, "HEALTH HAVEN", SCR_WIDTH / 2, SCR_HEIGHT - 100);
     }
 
     @Override

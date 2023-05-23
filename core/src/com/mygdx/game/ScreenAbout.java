@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class ScreenAbout implements Screen {
     HealthHaven s;
     Texture imgBackGround; // фон
-    SpaceButton btnBack;
+    HavenButton btnBack;
 
     String textAbout =
             "Игра Health Haven\n" +
@@ -29,7 +29,7 @@ public class ScreenAbout implements Screen {
         s = healthHaven;
         imgBackGround = new Texture("space02.jpg");
         // создаём кнопки
-        btnBack = new SpaceButton(s.fontLarge, "BACK", 200, 150);
+        btnBack = new HavenButton(s.fontLarge, "BACK", 200, 150);
     }
 
     @Override

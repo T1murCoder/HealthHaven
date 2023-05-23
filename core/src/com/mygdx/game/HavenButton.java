@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
-public class SpaceButton {
+public class HavenButton {
     float x, y;
     float width, height;
     String text;
@@ -12,7 +12,7 @@ public class SpaceButton {
     boolean isTextButton;
     Texture img;
 
-    public SpaceButton(BitmapFont font, String text, float x, float y) {
+    public HavenButton(BitmapFont font, String text, float x, float y) {
         this.x = x;
         this.y = y;
         this.text = text;
@@ -23,7 +23,7 @@ public class SpaceButton {
         isTextButton = true;
     }
 
-    public SpaceButton(Texture img, float x, float y, float width, float height){
+    public HavenButton(Texture img, float x, float y, float width, float height){
         this.img = img;
         this.x = x;
         this.y = y;

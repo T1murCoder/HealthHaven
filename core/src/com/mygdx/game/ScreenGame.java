@@ -21,13 +21,13 @@ public class ScreenGame implements Screen {
 
     // текстуры
     Texture imgBG;
-    Texture imgShip;
+    Texture imgGuy;
     public static TextureRegion[] imgGoodItem = new TextureRegion[3];
     public static TextureRegion[] imgBadItem = new TextureRegion[3];
     // звуки
 
     // кнопки
-    SpaceButton btnExit;
+    HavenButton btnExit;
 
     // игровые объекты
     ArrayList<HavenItem> items = new ArrayList<>();
@@ -55,7 +55,7 @@ public class ScreenGame implements Screen {
 
         // загружаем изображения
         imgBG = new Texture("bg_game.png");
-        imgShip = new Texture("ship.png");
+        imgGuy = new Texture("ship.png");
 
         for (int i = 0; i < imgGoodItem.length; i++) {
             imgGoodItem[i] = new TextureRegion(new Texture("items/good/" + (i + 1) + ".png"));
@@ -77,7 +77,7 @@ public class ScreenGame implements Screen {
         //sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 
         // создаём кнопки
-        btnExit = new SpaceButton(s.fontSmall, "exit", SCR_WIDTH-100, 20);
+        btnExit = new HavenButton(s.fontSmall, "exit", SCR_WIDTH-100, 20);
 
         // создаём и загружаем таблицу рекордов
         for (int i = 0; i < players.length; i++) {
@@ -191,6 +191,15 @@ public class ScreenGame implements Screen {
 
          */
 
+        for (HavenItem elem: items) {
+            s.batch.draw(elem.type.img,
+                    elem.getX(), elem.getY(),
+                    elem.width/2, elem.height/2,
+                    elem.width, elem.height,
+                    1, 1, elem.angle);
+        }
+
+        /*
         for (int i = 0; i < items.size(); i++) {
             s.batch.draw(items.get(i).type.img,
                     items.get(i).getX(), items.get(i).getY(),
@@ -198,9 +207,9 @@ public class ScreenGame implements Screen {
                     items.get(i).width, items.get(i).height,
                     1, 1, items.get(i).angle);
         }
-
+        */
         if(guy.isAlive) {
-            s.batch.draw(imgShip, guy.getX(), guy.getY(), guy.width, guy.height);
+            s.batch.draw(imgGuy, guy.getX(), guy.getY(), guy.width, guy.height);
         }
         s.fontSmall.draw(s.batch, "TIME: "+timeToString(timeCurrent), SCR_WIDTH-250, SCR_HEIGHT-20);
         s.fontSmall.draw(s.batch, "HEALTH: "+ guy.health, 20, SCR_HEIGHT-20);
@@ -238,7 +247,7 @@ public class ScreenGame implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
-        imgShip.dispose();
+        imgGuy.dispose();
     }
 
     void spawnItem() {
@@ -258,7 +267,7 @@ public class ScreenGame implements Screen {
     }
 
     void takeHealthEverySecond(int amount) {
-        if (timeCounter % 60 == 0) {
+        if (timeCounter % 60 == 0 && guy.isAlive) {
             guy.health -= amount;
         }
     }

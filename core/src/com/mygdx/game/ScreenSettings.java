@@ -14,12 +14,12 @@ public class ScreenSettings implements Screen {
 
     Texture imgBackGround; // фон
 
-    SpaceButton btnName;
-    SpaceButton btnMode;
-    SpaceButton btnSound;
-    SpaceButton btnMusic;
-    SpaceButton btnClearRecords;
-    SpaceButton btnBack;
+    HavenButton btnName;
+    HavenButton btnMode;
+    HavenButton btnSound;
+    HavenButton btnMusic;
+    HavenButton btnClearRecords;
+    HavenButton btnBack;
 
     boolean isEnterName;
 
@@ -29,12 +29,12 @@ public class ScreenSettings implements Screen {
 
         imgBackGround = new Texture("bg_settings.png");
         // создаём кнопки
-        btnName = new SpaceButton(s.fontMedium, "Name: Noname", 50, 600);
-        btnMode = new SpaceButton(s.fontMedium, "Mode: Easy", 50, 550);
-        btnSound = new SpaceButton(s.fontMedium, "Sound: ON", 50, 500);
-        btnMusic = new SpaceButton(s.fontMedium, "Music: ON", 50, 450);
-        btnClearRecords = new SpaceButton(s.fontMedium, "Clear Records", 50, 400);
-        btnBack = new SpaceButton(s.fontMedium, "Back", 50, 150);
+        btnName = new HavenButton(s.fontMedium, "Name: Noname", 50, 600);
+        btnMode = new HavenButton(s.fontMedium, "Mode: Easy", 50, 550);
+        btnSound = new HavenButton(s.fontMedium, "Sound: ON", 50, 500);
+        btnMusic = new HavenButton(s.fontMedium, "Music: ON", 50, 450);
+        btnClearRecords = new HavenButton(s.fontMedium, "Clear Records", 50, 400);
+        btnBack = new HavenButton(s.fontMedium, "Back", 50, 150);
 
         loadSettings();
     }
