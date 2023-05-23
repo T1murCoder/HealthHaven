@@ -3,14 +3,18 @@ package com.t1murcoder.healthhaven;
 
 import static com.t1murcoder.healthhaven.HealthHaven.SCR_WIDTH;
 
+import com.badlogic.gdx.graphics.Texture;
+
 public class Guy extends HavenObject {
     boolean isAlive;
     int health;
+    Texture img;
 
-    public Guy(float x, float y, float width, float height) {
+    public Guy(float x, float y, float width, float height, Texture img) {
         super(x, y, width, height);
         isAlive = true;
         health = 100;
+        this.img = img;
     }
 
     @Override

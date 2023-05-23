@@ -131,7 +131,6 @@ public class ScreenGame implements Screen {
         }
         // TODO: Сделать звуки
         // TODO: Сделать другие фоны для настроек, about
-        // TODO: Переписать about
         // наши выстрелы
         /*
         if(ship.isAlive){
@@ -209,7 +208,7 @@ public class ScreenGame implements Screen {
         }
         */
         if(guy.isAlive) {
-            s.batch.draw(imgGuy, guy.getX(), guy.getY(), guy.width, guy.height);
+            s.batch.draw(guy.img, guy.getX(), guy.getY(), guy.width, guy.height);
         }
         s.fontSmall.draw(s.batch, "TIME: "+timeToString(timeCurrent), SCR_WIDTH-250, SCR_HEIGHT-20);
         s.fontSmall.draw(s.batch, "HEALTH: "+ guy.health, 20, SCR_HEIGHT-20);
@@ -303,7 +302,7 @@ public class ScreenGame implements Screen {
         // удаляем все объекты на экране
         items.clear();
         timeStart = TimeUtils.millis(); // время старта
-        guy = new Guy(SCR_WIDTH/2, 100, 100, 100); // создаём объект космического корабля
+        guy = new Guy(SCR_WIDTH/2, 100, 100, 100, imgGuy); // создаём объект космического корабля
         // определяем интервал спауна врагов в зависимости от уровня игры
         if(s.modeOfGame == MODE_EASY) {
             timeItemInterval = 900;
