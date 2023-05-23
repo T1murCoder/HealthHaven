@@ -1,7 +1,7 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
 
-import static com.mygdx.game.HealthHaven.SCR_WIDTH;
+import static com.t1murcoder.healthhaven.HealthHaven.SCR_WIDTH;
 
 public class Guy extends HavenObject {
     boolean isAlive;

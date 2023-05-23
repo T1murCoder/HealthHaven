@@ -1,11 +1,10 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
-import static com.mygdx.game.HealthHaven.SCR_HEIGHT;
-import static com.mygdx.game.HealthHaven.SCR_WIDTH;
+import static com.t1murcoder.healthhaven.HealthHaven.SCR_HEIGHT;
+import static com.t1murcoder.healthhaven.HealthHaven.SCR_WIDTH;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.mygdx.game.HealthHaven;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {

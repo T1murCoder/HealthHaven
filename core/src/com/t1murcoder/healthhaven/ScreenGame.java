@@ -1,7 +1,7 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
 
-import static com.mygdx.game.HealthHaven.*;
+import static com.t1murcoder.healthhaven.HealthHaven.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

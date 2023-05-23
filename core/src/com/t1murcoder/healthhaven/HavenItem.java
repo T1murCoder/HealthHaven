@@ -1,8 +1,8 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
 
-import static com.mygdx.game.HealthHaven.SCR_HEIGHT;
-import static com.mygdx.game.HealthHaven.SCR_WIDTH;
+import static com.t1murcoder.healthhaven.HealthHaven.SCR_HEIGHT;
+import static com.t1murcoder.healthhaven.HealthHaven.SCR_WIDTH;
 
 import com.badlogic.gdx.math.MathUtils;
 

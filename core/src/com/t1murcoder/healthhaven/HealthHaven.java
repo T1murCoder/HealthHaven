@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

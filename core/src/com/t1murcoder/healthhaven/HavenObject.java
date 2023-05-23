@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
 public class HavenObject {
     float x, y;

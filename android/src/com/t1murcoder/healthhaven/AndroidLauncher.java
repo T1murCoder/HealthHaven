@@ -1,10 +1,9 @@
-package com.mygdx.game;
+package com.t1murcoder.healthhaven;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.mygdx.game.HealthHaven;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
