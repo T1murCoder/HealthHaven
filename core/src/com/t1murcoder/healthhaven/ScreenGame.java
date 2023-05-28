@@ -21,7 +21,9 @@ public class ScreenGame implements Screen {
 
     // текстуры
     Texture imgBG;
-    Texture imgGuy;
+    Texture imgGuyAtlas;
+    TextureRegion[][] imgGuy = new TextureRegion[2][9];
+
     public static TextureRegion[] imgGoodItem = new TextureRegion[3];
     public static TextureRegion[] imgBadItem = new TextureRegion[3];
     // звуки
@@ -55,7 +57,11 @@ public class ScreenGame implements Screen {
 
         // загружаем изображения
         imgBG = new Texture("bg_game.png");
-        imgGuy = new Texture("ship.png");
+        imgGuyAtlas = new Texture("man_go_atlas.png");
+        for (int i = 0; i < imgGuy[0].length; i++) {
+            imgGuy[0][i] = new TextureRegion(imgGuyAtlas, 256*i, 0, 256, 380);
+            imgGuy[1][i] = new TextureRegion(imgGuyAtlas, 256*i, 380, 256, 380);
+        }
 
         for (int i = 0; i < imgGoodItem.length; i++) {
             imgGoodItem[i] = new TextureRegion(new Texture("items/good/" + (i + 1) + ".png"));
@@ -190,6 +196,11 @@ public class ScreenGame implements Screen {
 
          */
 
+        if(guy.isAlive) {
+            s.batch.draw(imgGuy[0][guy.phase], guy.getX(), guy.getY(), guy.width/2, guy.height/2,
+                    guy.width, guy.height, guy.flip(), 1, 0);
+        }
+
         for (HavenItem elem: items) {
             s.batch.draw(elem.type.img,
                     elem.getX(), elem.getY(),
@@ -208,8 +219,10 @@ public class ScreenGame implements Screen {
         }
         */
         if(guy.isAlive) {
-            s.batch.draw(guy.img, guy.getX(), guy.getY(), guy.width, guy.height);
+            s.batch.draw(imgGuy[1][guy.phase], guy.getX(), guy.getY(), guy.width/2, guy.height/2,
+                    guy.width, guy.height, guy.flip(), 1, 0);
         }
+
         s.fontSmall.draw(s.batch, "TIME: "+timeToString(timeCurrent), SCR_WIDTH-250, SCR_HEIGHT-20);
         s.fontSmall.draw(s.batch, "HEALTH: "+ guy.health, 20, SCR_HEIGHT-20);
         btnExit.font.draw(s.batch, btnExit.text, btnExit.x, btnExit.y);
@@ -246,7 +259,7 @@ public class ScreenGame implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
-        imgGuy.dispose();
+        imgGuyAtlas.dispose();
     }
 
     void spawnItem() {
@@ -302,7 +315,7 @@ public class ScreenGame implements Screen {
         // удаляем все объекты на экране
         items.clear();
         timeStart = TimeUtils.millis(); // время старта
-        guy = new Guy(SCR_WIDTH/2, 100, 100, 100, imgGuy); // создаём объект космического корабля
+        guy = new Guy(SCR_WIDTH/2, 170, 256*0.8f, 380*0.8f); // создаём объект гуя
         // определяем интервал спауна врагов в зависимости от уровня игры
         if(s.modeOfGame == MODE_EASY) {
             timeItemInterval = 900;
