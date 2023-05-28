@@ -280,18 +280,8 @@ public class ScreenGame implements Screen {
 
     void takeHealthEverySecond(int amount) {
         if (timeCounter % 60 == 0 && guy.isAlive) {
-            guy.health -= amount;
+            changeHealth(-amount);
         }
-    }
-
-    void spawnShot() {
-        /*
-        if(TimeUtils.millis() > timeShotSpawn+timeShotInterval) {
-            shots.add(new ShipShot(ship.x, ship.y, ship.width, ship.height));
-            timeShotSpawn = TimeUtils.millis();
-            //if(s.sound) sndShoot.play();
-        }
-        */
     }
 
     String timeToString(long time){

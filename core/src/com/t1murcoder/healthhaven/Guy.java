@@ -30,7 +30,7 @@ public class Guy extends HavenObject {
             if (++phase == nPhases) phase = 0;
             timeLastPhase = TimeUtils.millis();
         }
-        if(vx < 0.1) phase = 6;
+        if(Math.abs(vx) < 0.1) phase = 6;
     }
 
     int flip(){
