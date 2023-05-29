@@ -224,7 +224,6 @@ public class InputKeyboard {
         parameter.borderWidth = 1;
         parameter.borderStraight = true;
         parameter.characters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>";
-        System.out.println(parameter.characters);
         font = generator.generateFont(parameter);
         generator.dispose();
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);

@@ -25,7 +25,7 @@ public class ScreenGame implements Screen {
     TextureRegion[][] imgGuy = new TextureRegion[2][9];
 
     public static TextureRegion[] imgGoodItem = new TextureRegion[3];
-    public static TextureRegion[] imgBadItem = new TextureRegion[3];
+    public static TextureRegion[] imgBadItem = new TextureRegion[4];
     // звуки
 
     // кнопки
@@ -37,7 +37,7 @@ public class ScreenGame implements Screen {
     Guy guy;
     Player[] players = new Player[6]; // игроки в таблице рекордов
 
-    TypeItem[] typeItems = new TypeItem[6];
+    TypeItem[] typeItems = new TypeItem[7];
 
     // время
     long timeStart, timeCurrent;
@@ -77,6 +77,7 @@ public class ScreenGame implements Screen {
         typeItems[3] = new TypeItem(imgBadItem[0], -7, "Beer");
         typeItems[4] = new TypeItem(imgBadItem[1], -5, "Beer can");
         typeItems[5] = new TypeItem(imgBadItem[2], -15, "Cigarette");
+        typeItems[6] = new TypeItem(imgBadItem[3], -25, "Drugs");
 
         // загружаем звуки
         //sndShoot = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
@@ -104,6 +105,7 @@ public class ScreenGame implements Screen {
             s.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             s.camera.unproject(s.touch);
             guy.vx = (s.touch.x - guy.x)/50;
+            if(Math.abs(guy.vx) > 10) guy.vx = guy.vx>0?10:-10;
             //ship.vy = (s.touch.y - ship.y)/50;
             if(btnExit.hit(s.touch.x, s.touch.y)) {
                 s.setScreen(s.screenIntro);

@@ -49,6 +49,6 @@ public class Guy extends HavenObject {
     }
 
     boolean overlap(HavenItem item) {
-        return Math.abs(x-item.x) < width/10+item.width/10 & Math.abs(y-item.y) < height/10+item.height/2;
+        return Math.abs(x-item.x) < width/20+item.width/20 & Math.abs(y-item.y) < height/10+item.height/2;
     }
 }
