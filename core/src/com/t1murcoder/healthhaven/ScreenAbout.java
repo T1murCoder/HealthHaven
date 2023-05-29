@@ -27,7 +27,7 @@ public class ScreenAbout implements Screen {
 
     public ScreenAbout(HealthHaven healthHaven) {
         s = healthHaven;
-        imgBackGround = new Texture("space02.jpg");
+        imgBackGround = new Texture("bg_about.png");
         // создаём кнопки
         btnBack = new HavenButton(s.fontLarge, "BACK", 200, 150);
     }
