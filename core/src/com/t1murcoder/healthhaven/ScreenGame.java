@@ -84,7 +84,7 @@ public class ScreenGame implements Screen {
         //sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 
         // создаём кнопки
-        btnExit = new HavenButton(s.fontSmall, "exit", SCR_WIDTH-100, 20);
+        btnExit = new HavenButton(s.fontMedium, "exit", SCR_WIDTH-120, 25);
 
         // создаём и загружаем таблицу рекордов
         for (int i = 0; i < players.length; i++) {
@@ -111,7 +111,7 @@ public class ScreenGame implements Screen {
                 s.setScreen(s.screenIntro);
             }
         } else if(isAccelerometerPresent) { // проверяем наклон акселерометра
-            guy.vx = -Gdx.input.getAccelerometerX()*2;
+            guy.vx = Gdx.input.getAccelerometerY()*2;
         }
 
         // +++++++++++++++ события игры ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -138,7 +138,6 @@ public class ScreenGame implements Screen {
             }
         }
         // TODO: Сделать звуки
-        // TODO: Сделать другие фоны для настроек, about
         // наши выстрелы
         /*
         if(ship.isAlive){
